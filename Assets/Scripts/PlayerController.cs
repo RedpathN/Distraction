@@ -14,7 +14,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float gravity;
 
-    public bool falling = true;
+    private Rigidbody rb;
+
+    private bool falling = true;
+    private bool distracted = false;
+    private GameObject currentDistraction;
 
     // Update is called once per frame
     void Update()
@@ -39,13 +43,36 @@ public class PlayerController : MonoBehaviour
         {
             transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + (Vector3.up * turnSpeed) * Time.deltaTime);
         }
-        
-        
-
-        /*if(falling)
+        //Gravity
+        if(falling)
         {
             transform.position -= new Vector3(0, gravity, 0);
-        }*/
+        }
+        if (distracted)
+        {
+            moveToDistraction();
+        }
+
+    }
+
+    private void OnTriggerEnter(Collider collider)
+    {
+        if(collider.tag == "Distraction")
+        {
+            distracted = true;
+            currentDistraction = collider.gameObject;
+        }
+        
+    }
+
+    private void OnTriggerExit(Collider collider)
+    {
+        if (collider.tag == "Distraction")
+        {
+            distracted = false;
+            currentDistraction = null;
+        }
+
     }
 
     private float nextHeight(int dir)
@@ -69,4 +96,18 @@ public class PlayerController : MonoBehaviour
 
         return nextPos;
     }
+
+    private void moveToDistraction()
+    {
+        float distToDistraction = Vector3.Distance(transform.position, currentDistraction.transform.position);
+
+        float influence = Mathf.Sin((1-(distToDistraction/currentDistraction.GetComponent<SphereCollider>().radius)) * Mathf.PI/2);
+
+        if(distToDistraction > 0.1f) 
+        {
+            transform.position += ((currentDistraction.transform.position - transform.position).normalized * influence * currentDistraction.GetComponent<DistractionManager>().pullForce) * Time.deltaTime;
+        }
+        
+    }
+
 }
