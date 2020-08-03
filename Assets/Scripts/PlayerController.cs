@@ -16,10 +16,12 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody rb;
 
-    private bool falling = true;
-    private bool distracted = false;
-    private GameObject currentDistraction;
+    private bool falling = false;
 
+    private void Start()
+    {
+        transform.position += new Vector3(0, nextHeight(-1), 0);
+    }
     // Update is called once per frame
     void Update()
     {
@@ -48,30 +50,7 @@ public class PlayerController : MonoBehaviour
         {
             transform.position -= new Vector3(0, gravity, 0);
         }
-        if (distracted)
-        {
-            moveToDistraction();
-        }
 
-    }
-
-    private void OnTriggerEnter(Collider collider)
-    {
-        if(collider.tag == "Distraction")
-        {
-            distracted = true;
-            currentDistraction = collider.gameObject;
-        }
-        
-    }
-
-    private void OnTriggerExit(Collider collider)
-    {
-        if (collider.tag == "Distraction")
-        {
-            distracted = false;
-            currentDistraction = null;
-        }
 
     }
 
@@ -97,17 +76,6 @@ public class PlayerController : MonoBehaviour
         return nextPos;
     }
 
-    private void moveToDistraction()
-    {
-        float distToDistraction = Vector3.Distance(transform.position, currentDistraction.transform.position);
 
-        float influence = Mathf.Sin((1-(distToDistraction/currentDistraction.GetComponent<SphereCollider>().radius)) * Mathf.PI/2);
-
-        if(distToDistraction > 0.1f) 
-        {
-            transform.position += ((currentDistraction.transform.position - transform.position).normalized * influence * currentDistraction.GetComponent<DistractionManager>().pullForce) * Time.deltaTime;
-        }
-        
-    }
 
 }
