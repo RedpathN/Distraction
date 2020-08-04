@@ -27,7 +27,7 @@ public class DistractionManager: MonoBehaviour
         Gizmos.DrawCube(transform.position, Vector3.one * 0.3f);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (isActive)
         {

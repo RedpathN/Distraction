@@ -14,13 +14,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float gravity;
 
-    private Rigidbody rb;
+    private Vector3 moveDir = Vector3.zero;
 
     private bool falling = false;
 
     private void Start()
     {
-        transform.position += new Vector3(0, nextHeight(-1), 0);
+        transform.position += new Vector3(0, nextHeight(), 0);
     }
     // Update is called once per frame
     void Update()
@@ -28,13 +28,15 @@ public class PlayerController : MonoBehaviour
         //Loc
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += (transform.forward * moveSpeed) * Time.deltaTime;
-            transform.position += new Vector3(0, nextHeight(1), 0);
+            moveDir = transform.forward;
         }
         else if (Input.GetKey(KeyCode.S))
         {
-            transform.position += (-transform.forward * moveSpeed) * Time.deltaTime;
-            transform.position += new Vector3(0, nextHeight(-1), 0);
+            moveDir = -transform.forward;
+        }
+        else
+        {
+            moveDir = Vector3.zero;
         }
         //Rot
         if (Input.GetKey(KeyCode.A))
@@ -51,13 +53,22 @@ public class PlayerController : MonoBehaviour
             transform.position -= new Vector3(0, gravity, 0);
         }
 
-
     }
 
-    private float nextHeight(int dir)
+    private void FixedUpdate()
+    {
+        movePlayer();
+    }
+
+    private void movePlayer()
+    {
+        transform.position += (moveDir * moveSpeed) * Time.fixedDeltaTime;
+        transform.position += new Vector3(0, nextHeight(), 0);
+    }
+    private float nextHeight()
     {
 
-        Vector3 origin = new Vector3(transform.position.x, transform.position.y, transform.position.z + ((moveSpeed * dir) * Time.deltaTime));
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y, transform.position.z + (moveDir.z * Time.fixedDeltaTime*4));
         RaycastHit hit;
         float nextPos = 0;
         LayerMask lm = LayerMask.GetMask("Walkable");
