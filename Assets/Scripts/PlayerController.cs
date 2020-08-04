@@ -1,51 +1,81 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class PlayerController : MonoBehaviour
 {
 
-    [SerializeField]
-    private float rotationSpeed = 360f;
-    [SerializeField]
-    private float movementSpeed = 0.5f;
-
-
     private CharacterController charCont;
+    [SerializeField]
+    private float moveSpeed;
+    [SerializeField]
+    private float turnSpeed;
+    [SerializeField]
+    private float gravity;
 
-    private Vector3 gravity = new Vector3(0, -0.1f, 0);
-    // Start is called before the first frame update
-    void Start()
+    private Rigidbody rb;
+
+    private bool falling = false;
+
+    private void Start()
     {
-        charCont = GetComponent<CharacterController>();
+        transform.position += new Vector3(0, nextHeight(-1), 0);
     }
-
     // Update is called once per frame
     void Update()
     {
-        //Location
+        //Loc
         if (Input.GetKey(KeyCode.W))
         {
-            charCont.SimpleMove((transform.forward * movementSpeed));
+            transform.position += (transform.forward * moveSpeed) * Time.deltaTime;
+            transform.position += new Vector3(0, nextHeight(1), 0);
         }
-        if (Input.GetKey(KeyCode.S))
+        else if (Input.GetKey(KeyCode.S))
         {
-            charCont.SimpleMove(-(transform.forward * movementSpeed));
+            transform.position += (-transform.forward * moveSpeed) * Time.deltaTime;
+            transform.position += new Vector3(0, nextHeight(-1), 0);
         }
-
-
-        //Rotation
+        //Rot
         if (Input.GetKey(KeyCode.A))
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + (Vector3.up * -rotationSpeed * Time.deltaTime));
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles - (Vector3.up * turnSpeed) * Time.deltaTime);
         }
-        if (Input.GetKey(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + (Vector3.up * rotationSpeed * Time.deltaTime));
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + (Vector3.up * turnSpeed) * Time.deltaTime);
+        }
+        //Gravity
+        if(falling)
+        {
+            transform.position -= new Vector3(0, gravity, 0);
         }
 
-        //Add Gravity
-        //transform.position += gravity;
 
     }
+
+    private float nextHeight(int dir)
+    {
+
+        Vector3 origin = new Vector3(transform.position.x, transform.position.y, transform.position.z + ((moveSpeed * dir) * Time.deltaTime));
+        RaycastHit hit;
+        float nextPos = 0;
+        LayerMask lm = LayerMask.GetMask("Walkable");
+
+        if (Physics.Raycast(origin, -transform.up, out hit, 1.5f, lm))
+        {
+            falling = false;
+            Debug.DrawRay(origin, -transform.up * hit.distance, Color.red);
+            nextPos = (hit.point.y - transform.position.y) + 1.01f;
+        }
+        else 
+        {
+            falling = true;
+        }
+
+        return nextPos;
+    }
+
+
+
 }
