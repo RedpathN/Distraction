@@ -11,10 +11,18 @@ public class DistractionManager: MonoBehaviour
 
     public float pullForce = 10;
     private float radius;
+
+    private LineRenderer line;
+
+    public float influenceView;
+
+    [SerializeField]
+    private bool enableSuction = true;
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         radius = GetComponent<SphereCollider>().radius;
+        line = transform.GetChild(1).GetComponent<LineRenderer>();
     }
 
 
@@ -40,6 +48,7 @@ public class DistractionManager: MonoBehaviour
         if(other.tag == "Player")
         {
             isActive = true;
+            line.gameObject.SetActive(true);
         }
     }
 
@@ -48,7 +57,9 @@ public class DistractionManager: MonoBehaviour
         if (other.tag == "Player")
         {
             isActive = false;
+            line.gameObject.SetActive(false);
         }
+
     }
 
     private void pullPlayer()
@@ -59,11 +70,18 @@ public class DistractionManager: MonoBehaviour
 
         if (distToPlayer < radius * 0.99f && distToPlayer > 0.5f)
         {
-            Vector3 targetVec = ((transform.position - player.transform.position).normalized);
-            targetVec.y = 0;
-            player.transform.position += targetVec * (influence * pullForce);
-        }
-        
+            if (enableSuction)
+            {
+                Vector3 targetVec = ((transform.position - player.transform.position).normalized);
+                targetVec.y = 0;
+                player.transform.position += targetVec * (influence * (pullForce*radius));
+            }
 
+            line.SetPosition(1, transform.InverseTransformPoint(player.transform.position));
+            float linewidth = Mathf.Lerp( 0.005f, 0.08f, influence * radius);
+            line.SetWidth(linewidth * 2f, linewidth);
+        }
+
+        influenceView = influence * radius;
     }
 }

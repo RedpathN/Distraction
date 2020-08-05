@@ -39,13 +39,9 @@ public class PlayerController : MonoBehaviour
             moveDir = Vector3.zero;
         }
         //Rot
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles - (Vector3.up * turnSpeed) * Time.deltaTime);
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles + (Vector3.up * turnSpeed) * Time.deltaTime);
+            transform.rotation = Quaternion.Euler(transform.rotation.eulerAngles - (Vector3.up * (Input.GetAxis("Horizontal") * turnSpeed)) * Time.deltaTime);
         }
         //Gravity
         if(falling)
