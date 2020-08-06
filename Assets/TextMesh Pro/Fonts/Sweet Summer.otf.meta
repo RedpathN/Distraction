@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: 6dfdcdcf4f5475640bf423cb14d005f4
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Sweet Summer
+  fontNames:
+  - Sweet Summer
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: df1fca004f79ff14a9a3896c5ec22831, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
