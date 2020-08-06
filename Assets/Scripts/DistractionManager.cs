@@ -26,7 +26,7 @@ public class DistractionManager: MonoBehaviour
     }
 
 
-
+#if UNITY_EDITOR
     private void OnDrawGizmos()
     {
         Handles.color = Color.red;
@@ -34,6 +34,7 @@ public class DistractionManager: MonoBehaviour
         Gizmos.color = Color.white;
         Gizmos.DrawCube(transform.position, Vector3.one * 0.3f);
     }
+#endif
 
     private void FixedUpdate()
     {

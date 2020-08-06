@@ -24,6 +24,10 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveDir = Vector3.zero;
     private Rigidbody rb;
 
+    public Vector3 startPos;
+
+    public void Awake() => startPos = transform.position;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
