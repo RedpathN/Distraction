@@ -26,13 +26,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //Loc
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
         {
             moveDir = transform.forward;
-        }
-        else if (Input.GetKey(KeyCode.S))
-        {
-            moveDir = -transform.forward;
         }
         else
         {
@@ -56,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     private void movePlayer()
     {
-        transform.position += (moveDir * moveSpeed) * Time.fixedDeltaTime;
+        transform.position += ((transform.forward * Input.GetAxis("Vertical")) * (moveSpeed * Time.fixedDeltaTime)); 
         transform.position += new Vector3(0, nextHeight(), 0);
     }
     private float nextHeight()
