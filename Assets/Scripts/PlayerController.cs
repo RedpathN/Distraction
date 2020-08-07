@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     private float turnSpeed;
     [SerializeField]
     private float maxFallTimer = 1;
+    [SerializeField]
+    private float minFallHeight = -20;
 
 
     private bool isMoving = false;
@@ -62,6 +64,15 @@ public class PlayerController : MonoBehaviour
                 isFalling = true;
             }
 
+        }
+
+        if (transform.position.y < minFallHeight)
+        {
+            transform.position = startPos;
+            rb.velocity = Vector3.zero;
+            isFalling = false;
+            fallTimerOn = false;
+            fallTimer = 0;
         }
 
         transform.rotation = Quaternion.Euler(Vector3.up * (Input.GetAxis("Horizontal") * turnSpeed));
